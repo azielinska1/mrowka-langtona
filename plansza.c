@@ -40,7 +40,7 @@ void rysuj (int m, int n, int mrowka_m, int mrowka_n, int kierunek, int **t, FIL
 	 		}
 		
                 }
-		printf(out,"\n");
+		fprintf(out,"\n");
 		for ( int i=1; i<=m; i++)
                 {
                         fprintf(out,"└─┘");
