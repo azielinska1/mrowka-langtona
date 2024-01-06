@@ -16,10 +16,20 @@ void rysuj (int m, int n, int mrowka_m, int mrowka_n, int kierunek, int **t){
                 {
 			if (i == mrowka_m && j == mrowka_n)
 			{
-				if ( kierunek == 0 ) printf("│△│");
-				if ( kierunek == 1 ) printf("│▷│");
-				if ( kierunek == 2 ) printf("│▽│");
-				if ( kierunek == 3 ) printf("│◁│");
+				if ( t[i][j]==0 )//bialy
+				{
+					if ( kierunek == 0 ) printf("│△│");
+					if ( kierunek == 1 ) printf("│▷│");
+					if ( kierunek == 2 ) printf("│▽│");
+					if ( kierunek == 3 ) printf("│◁│");
+				}
+				else//czarny
+                                {
+                                        if ( kierunek == 0 ) printf("│▲│");
+                                        if ( kierunek == 1 ) printf("│▶│");
+                                        if ( kierunek == 2 ) printf("│▼│");
+                                        if ( kierunek == 3 ) printf("│◀│");
+                                }
 			
 			}
 			else
