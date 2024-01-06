@@ -4,6 +4,6 @@
 #include <stdio.h>
 
 
-void rysuj(int i, int j, int mrowka_m, int mrowka_n, int kierunek, int **t);
+void rysuj(int i, int j, int mrowka_m, int mrowka_n, int kierunek, int **t, FILE *out);
 
 #endif
