@@ -37,10 +37,7 @@ void rysuj (int m, int n, int mrowka_m, int mrowka_n, int kierunek, int **t){
 
                 }
 		printf("\n");
-
-
 	}
-// SQUARE_WHITE: 
-// SQUARE_BLACK:█
+	printf("\n");
 }
 
