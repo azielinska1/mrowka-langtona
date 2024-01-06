@@ -3,7 +3,7 @@
 #include <locale.h>
 #include "plansza.h"
 
-void rysuj (int m, int n, int mrowka_m, int mrowka_n, int kierunek){
+void rysuj (int m, int n, int mrowka_m, int mrowka_n, int kierunek, int **t){
 
 	for ( int j=1; j<=n; j++)
 	{
@@ -22,7 +22,13 @@ void rysuj (int m, int n, int mrowka_m, int mrowka_n, int kierunek){
 				if ( kierunek == 3 ) printf("│◁│");
 			
 			}
-			else printf("│ │");
+			else
+			{
+				if (t[i][j]==0) printf("│ │");
+				else printf("│█│");
+	
+	 		}
+		
                 }
 		printf("\n");
 		for ( int i=1; i<=m; i++)
