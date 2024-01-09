@@ -25,20 +25,23 @@ int main(int argc, char *argv[]) {
     int itr = atoi(argv[3]);
     int kierunek = atoi(argv[4]);//0 - gora, 1 - prawo, 2 - dol, 3 - lewo
     //wspolrzedne mrowki
-    FILE *out = argc > 5 ? fopen(argv[5], "w"):stdout;
-    if(out==NULL){
-	    fprintf(stderr,"Blad nie moge pisac");
-	    return 1;
-    }
-
     int x=(m+1)/2;
     int y=(n+1)/2;
+     FILE *out;
+              char NazwaPliku[50];
+	      sprintf(NazwaPliku, "file_0.txt");
+   	        out = fopen(NazwaPliku, "w");
+		  if(out==NULL){
+ 		  fprintf(stderr, "Blad nie moge pisac");
+		return 1;
+													  			    }
     for (int i = 0; i <= m+1; i++) {
         for (int j = 0; j <= n+1; j++) {
                 fprintf (out,"%d",tab[i][j]);
         }
 	printf("\n");
     }
+  
     rysuj(m, n, x, y, kierunek, tab,out);
     for ( int i=0 ; i<itr ; i++ ){
 	if ( tab[x][y]==0 ) //komorka jest biala
@@ -56,6 +59,13 @@ int main(int argc, char *argv[]) {
         if (kierunek==2) y++;
         if (kierunek==3) x--;
 	if (tab[x][y]==2) { printf("Mrowka wyszla poza plansze\n"); return 2; }
+         sprintf(NazwaPliku, "file_%d.txt", i+1);
+	    fclose(out);
+	    out = fopen(NazwaPliku, "w");
+	      if(out==NULL){
+		      fprintf(stderr, "Blad nie moge pisac");
+		      return 1;
+		        }
 	rysuj (m, n, x, y, kierunek, tab,out);
 
     } 
