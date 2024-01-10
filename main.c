@@ -11,9 +11,9 @@ int main(int argc, char *argv[]) {
     int n = atoi(argv[2]);
 
 
-    int **tab = (int **)malloc((n+2) * sizeof(int *));
-    for (int i = 0; i <= n+1; i++) {
-        tab[i] = (int *)malloc((m+2) * sizeof(int));
+    int **tab = (int **)malloc((m+2) * sizeof(int *));
+    for (int i = 0; i <= m+1; i++) {
+        tab[i] = (int *)malloc((n+2) * sizeof(int));
     }
 
     for (int i = 0; i <= m+1; i++) {
