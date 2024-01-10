@@ -35,13 +35,6 @@ int main(int argc, char *argv[]) {
  		  fprintf(stderr, "Blad nie moge pisac");
 		return 1;
 													  			    }
-    for (int i = 0; i <= m+1; i++) {
-        for (int j = 0; j <= n+1; j++) {
-                fprintf (out,"%d",tab[i][j]);
-        }
-	printf("\n");
-    }
-  
     rysuj(m, n, x, y, kierunek, tab,out);
     for ( int i=0 ; i<itr ; i++ ){
 	if ( tab[x][y]==0 ) //komorka jest biala
