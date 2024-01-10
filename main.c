@@ -81,7 +81,9 @@ int main(int argc, char *argv[]) {
         }
 
     } 
+
     //printf("%d\n",itr);
+   
 
     for (int i = 0; i <= n+1; i++) {
         free(tab[i]);
