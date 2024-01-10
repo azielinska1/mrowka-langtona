@@ -3,7 +3,7 @@
 #include "plansza.h"
 
 int main(int argc, char *argv[]) {
-    if (argc != 6) {
+    if (argc > 6 || argc<5) {
         return 1;
     }
 
@@ -27,15 +27,26 @@ int main(int argc, char *argv[]) {
     //wspolrzedne mrowki
     int x=(m+1)/2;
     int y=(n+1)/2;
+    
      FILE *out = argc > 5 ? fopen(argv[5], "w"): stdout;
-              char NazwaPliku[50];
-	      sprintf(NazwaPliku, "%s_0.txt",argv[5]);
-   	        out = fopen(NazwaPliku, "w");
-		  if(out==NULL){
- 		  fprintf(stderr, "Blad nie moge pisac");
-		return 1;
-													  			    }
-    rysuj(m, n, x, y, kierunek, tab,out);
+    char NazwaPliku[50];          
+	if (argc == 6) {
+       		out = fopen(argv[5], "w");
+        	if (out == NULL) {
+            		fprintf(stderr, "Błąd: nie można otworzyć pliku %s\n", argv[5]);
+            		return 1;
+        	}
+    	}
+	else 	
+	{
+        out = stdout; // Standardowe wyjście
+    	}
+
+    	rysuj(m, n, x, y, kierunek, tab, out);
+
+    if (argc == 6) {
+        fclose(out); // Zamknij plik, jeśli był otwarty
+    }
     for ( int i=0 ; i<itr ; i++ ){
 	if ( tab[x][y]==0 ) //komorka jest biala
 	{
@@ -52,17 +63,25 @@ int main(int argc, char *argv[]) {
         if (kierunek==2) y++;
         if (kierunek==3) x--;
 	if (tab[x][y]==2) { printf("Mrowka wyszla poza plansze\n"); return 2; }
-         sprintf(NazwaPliku, "%s_%d.txt",argv[5], i+1);
-	    fclose(out);
-	    out = fopen(NazwaPliku, "w");
-	      if(out==NULL){
-		      fprintf(stderr, "Blad nie moge pisac");
-		      return 1;
-		        }
-	rysuj (m, n, x, y, kierunek, tab,out);
+        if (argc == 6) {
+            sprintf(NazwaPliku, "%s_%d.txt", argv[5], i + 1);
+            out = fopen(NazwaPliku, "w");
+            if (out == NULL) {
+                fprintf(stderr, "Błąd: nie można otworzyć pliku %s\n", NazwaPliku);
+                return 1;
+            }
+        } else {
+            out = stdout; // Standardowe wyjście
+        }
+
+        rysuj(m, n, x, y, kierunek, tab, out);
+
+        if (argc == 6) {
+            fclose(out); // Zamknij plik, jeśli był otwarty
+        }
 
     } 
-    printf("%d\n",itr);
+    //printf("%d\n",itr);
 
     for (int i = 0; i <= n+1; i++) {
         free(tab[i]);
