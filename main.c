@@ -27,9 +27,9 @@ int main(int argc, char *argv[]) {
     //wspolrzedne mrowki
     int x=(m+1)/2;
     int y=(n+1)/2;
-     FILE *out;
+     FILE *out = argc > 5 ? fopen(argv[5], "w"): stdout;
               char NazwaPliku[50];
-	      sprintf(NazwaPliku, "file_0.txt");
+	      sprintf(NazwaPliku, "%s_0.txt",argv[5]);
    	        out = fopen(NazwaPliku, "w");
 		  if(out==NULL){
  		  fprintf(stderr, "Blad nie moge pisac");
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
         if (kierunek==2) y++;
         if (kierunek==3) x--;
 	if (tab[x][y]==2) { printf("Mrowka wyszla poza plansze\n"); return 2; }
-         sprintf(NazwaPliku, "file_%d.txt", i+1);
+         sprintf(NazwaPliku, "%s_%d.txt",argv[5], i+1);
 	    fclose(out);
 	    out = fopen(NazwaPliku, "w");
 	      if(out==NULL){
