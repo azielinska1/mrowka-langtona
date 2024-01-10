@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
         if (kierunek==1) x++;
         if (kierunek==2) y++;
         if (kierunek==3) x--;
-	if (tab[x][y]==2) { printf("Mrowka wyszla poza plansze\n"); return 2; }
+	if (tab[x][y]==2) { printf("Mrowka wyszla poza plansze w iteracji %d\n", i); return 2; }
         if (argc == 6) {
             sprintf(NazwaPliku, "%s_%d.txt", argv[5], i + 1);
             out = fopen(NazwaPliku, "w");
