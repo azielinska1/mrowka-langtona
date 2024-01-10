@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 	rysuj (m, n, x, y, kierunek, tab,out);
 
     } 
-    printf("%d\n",itr);
+    fprintf(out, "%d\n",itr);
 
     for (int i = 0; i <= n+1; i++) {
         free(tab[i]);
