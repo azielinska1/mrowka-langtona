@@ -3,66 +3,59 @@
 #include "plansza.h"
 #include "wersja2.h"
 #include <string.h>
+#include <unistd.h>
 
 int main(int argc, char *argv[]) {
-    if (argc > 2) {
-        fprintf(stderr, "Błąd: Podano zbyt wiele argumentów.\n");
-        return 1;
-    }
-
+    int opt;
     int wersja;
     int m = 0, n = 0;  // Wymiary planszy
     int itr;            // Liczba iteracji
     int kierunek;       // 0 - góra, 1 - prawo, 2 - dół, 3 - lewo
     int x, y;           // Współrzędne mrówki
+    char Pliczek[] = NULL;
 
-    printf("Wersje:\n");
-    printf("1 - wczytanie pustej planszy z mrówką na środku\n");
-    printf("2 - wczytanie planszy z pliku\n");
-    printf("3 - wygenerowanie losowo planszy\n");
-    printf("Podaj liczbe:\n");
-    scanf("%d", &wersja);
+    while ((opt = getopt(argc, argv, "f:")) != -1) {
+        switch (opt) {
+            case 'f':
+                Pliczek = optarg;
+                break;
+            default:
+                fprintf(stderr, "Użycie: %s [-f plik_wyjsciowy]\n", argv[0]);
+                exit(EXIT_FAILURE);
+        }
+    }
+
+    if (argc - optind != 1) {
+        fprintf(stderr, "Uzycie: %s [-o plik_wyjsciowy] <wersja>\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    wersja = atoi(argv[optind]);
+
+    if (wersja < 1 || wersja > 3) {
+        fprintf(stderr, "Błąd: Nieprawidłowa wartość dla wersji.\n");
+        exit(EXIT_FAILURE);
+    }
 
     printf("Podaj wymiary:\n");
 
     if (scanf("%d %d", &m, &n) != 2 || m <= 0 || n <= 0) {
         fprintf(stderr, "Błąd: Podano nieprawidłowe wymiary planszy.\n");
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     printf("Podaj liczbe iteracji:\n");
 
     if (scanf("%d", &itr) != 1 || itr <= 0) {
         fprintf(stderr, "Błąd: Podano nieprawidłową liczbę iteracji.\n");
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
-    int **tab = (int **)malloc((m + 2) * sizeof(int *)); // Stany planszy
+    int **tab = (int **)malloc((m + 2) * sizeof(int *));
     for (int i = 0; i <= m + 1; i++) {
         tab[i] = (int *)malloc((n + 2) * sizeof(int));
     }
 
-
-    if (wersja == 1) {
-        printf("Podaj kierunek mrówki (0 - góra, 1 - prawo, 2 - dół, 3 - lewo):\n");
-        scanf("%d", &kierunek);
-
-        x = (m + 1) / 2;
-        y = (n + 1) / 2;
-    }
-    else if (wersja == 2) {
-	if (zczytywanie(m, n, &x, &y, &kierunek, tab) != 0) {
-            fprintf(stderr, "Błąd: Wczytywanie pliku nie powiodło się.\n");
-            // Zwolnienie zaalokowanej pamięci przed zakończeniem programu
-            for (int i = 0; i <= n + 1; i++) {
-                free(tab[i]);
-            }
-            free(tab);
-            return 1;
-        }
-    }
-
-    // 'Ściany' nie pozwalające wyjść mrówce poza planszę
     for (int i = 0; i <= m + 1; i++) {
         for (int j = 0; j <= n + 1; j++) {
             if (i == 0 || j == 0 || i == m + 1 || j == n + 1)
@@ -72,27 +65,41 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    FILE *out = argc > 1 ? fopen(argv[1], "w") : stdout;
-    char NazwaPliku[50];
-    if (argc == 2) {
-        out = fopen(argv[1], "w");
-        if (out == NULL) {
-        
-            fprintf(stderr, "Błąd: nie można otworzyć pliku %s\n", argv[1]);
-            // Zwolnienie zaalokowanej pamięci przed zakończeniem programu
-            for (int i = 0; i <= n + 1; i++) {
+    if (wersja == 1) {
+        printf("Podaj kierunek mrowki (0 - gora, 1 - prawo, 2 - dol, 3 - lewo):\n");
+        scanf("%d", &kierunek);
+
+        x = (m + 1) / 2;
+        y = (n + 1) / 2;
+    } else if (wersja == 2) {
+        if (zczytywanie(m, n, &x, &y, &kierunek, tab) != 0) {
+            fprintf(stderr, "Blad: Wczytywanie pliku nie powiodlo sie.\n");
+            for (int i = 0; i <= m + 1; i++) {
                 free(tab[i]);
             }
             free(tab);
-            return 1;
+            exit(EXIT_FAILURE);
         }
-    } else {
-        out = stdout; // Standardowe wyjście
     }
 
+    FILE *out;
+
+    if (Pliczek != NULL) {
+        out = fopen(Pliczek, "w");
+        if (out == NULL) {
+            fprintf(stderr, "Blad: Nie mozna otworzyć pliku %s\n", Pliczek);
+            for (int i = 0; i <= m + 1; i++) {
+                free(tab[i]);
+            }
+            free(tab);
+            exit(EXIT_FAILURE);
+        }
+    } else {
+        out = stdout; 
+    }
     rysuj(m, n, x, y, kierunek, tab, out);
 
-    if (argc == 2) {
+    if (Pliczek != NULL) {
         fclose(out);
     }
 
@@ -113,43 +120,39 @@ int main(int argc, char *argv[]) {
         if (kierunek == 3)
             x--;
 
-        if (x < 1 || x > m+1 || y < 1 || y > n+1) {
+        if (x < 1 || x > m + 1 || y < 1 || y > n + 1) {
             fprintf(stderr, "Mrowka wyszla poza plansze w iteracji %d\n", i);
-            // Zwolnienie zaalokowanej pamięci przed zakończeniem programu
-            for (int i = 0; i <= n + 1; i++) {
+            for (int i = 0; i <= m + 1; i++) {
                 free(tab[i]);
             }
             free(tab);
-            return 2;
+            exit(EXIT_FAILURE);
         }
-        if (argc == 2) {
-            sprintf(NazwaPliku, "%s_%d.txt", argv[1], i + 1);
+        if (Pliczek != NULL) {
+            char NazwaPliku[50];
+            sprintf(NazwaPliku, "%s_%d.txt", Pliczek, i + 1);
             out = fopen(NazwaPliku, "w");
             if (out == NULL) {
-                fprintf(stderr, "Błąd: nie można otworzyć pliku %s\n", NazwaPliku);
-                // Zwolnienie zaalokowanej pamięci przed zakończeniem programu
-                for (int i = 0; i <= n + 1; i++) {
+                fprintf(stderr, "Blad: Nie mozna otworzyc pliku %s\n", NazwaPliku);
+                for (int i = 0; i <= m + 1; i++) {
                     free(tab[i]);
                 }
                 free(tab);
-                return 1;
+                exit(EXIT_FAILURE);
             }
         } else {
-            out = stdout; // Standardowe wyjście
+            out = stdout; 
         }
-	rysuj(m, n, x, y, kierunek, tab, out);
+        rysuj(m, n, x, y, kierunek, tab, out);
 
-        if (argc == 2) {
+        if (Pliczek != NULL) {
             fclose(out);
         }
     }
-
-    // Zwolnienie zaalokowanej pamięci przed zakończeniem programu
-    for (int i = 0; i <= n + 1; i++) {
+    for (int i = 0; i <= m + 1; i++) {
         free(tab[i]);
     }
     free(tab);
 
     return 0;
 }
-
