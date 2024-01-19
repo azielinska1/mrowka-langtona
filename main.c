@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     int itr;            // Liczba iteracji
     int kierunek;       // 0 - góra, 1 - prawo, 2 - dół, 3 - lewo
     int x, y;           // Współrzędne mrówki
-    char Pliczek[] = NULL;
+    char *Pliczek = NULL;
 
     while ((opt = getopt(argc, argv, "f:")) != -1) {
         switch (opt) {
